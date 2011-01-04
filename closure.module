@@ -1,0 +1,63 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * 	Detect and add correct Javascript file
+ */
+
+define('CLOSURE_WITH_JQUERY', 'with_jQuery');
+define('CLOSURE_WITHOUT_JQUERY', 'without_jQuery');
+
+/**
+ * Implements hook_menu().
+ */
+function closure_menu() {
+  $items = array();
+  $items['admin/config/javascript/closure'] = array(
+    'title' => 'Closure Type',
+    'description' => 'Chooise the inject Closure Library type (with or without jQuery)',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('closure_settings'),
+    'access arguments' => array('administer closure'),
+    'file' => 'includes/closure.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function closure_permission() {
+  return array(
+    'administer closure' => array(
+      'title' => t('Administer closure'),
+      'description' => t('Configure Google Closure Library'),
+    ),
+  );
+}
+
+function closure_load_include() {
+  module_load_include('inc', 'closure', 'includes/closure.detect');
+}
+
+/**
+ * Add Google Closure Library
+ */
+function closure_init() {
+  closure_load_include();
+  drupal_add_js(closure_get_base_file(), array(
+    'type' => 'file',
+    'scope' => 'header',
+  	'group' => -101,
+    'weight' => -10,
+    'preprocess' => FALSE,
+  ));
+}
+
+/**
+ * Replace build-in js with our Closure js
+ */
+function closure_js_alter(&$javascripts) {
+  // @TODO: Replace core file with our port to Closure, current only add Closure
+}

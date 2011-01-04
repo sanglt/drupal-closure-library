@@ -1,0 +1,10 @@
+; $Id$
+name = Google Closure Library
+description = Add Google Closure Javascript Library to Drupal
+package = Javascript Utilities
+core = 7.x
+
+files[] = closure.module
+files[] = closure.install
+
+configure = admin/config/javascript/closure

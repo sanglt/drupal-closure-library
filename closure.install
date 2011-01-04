@@ -1,0 +1,50 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * 	Check system requirements and delete config after uninstall
+ */
+
+/**
+ * Implements hook_uninstall().
+ * 	Delete configuration
+ */
+function closure_uninstall() {
+  variable_del('closure_js_type');
+}
+
+/**
+ * Implements hook_requirements().
+ * 	Check Google Closure Javascript library
+ */
+function closure_requirements() {
+  $requirements = array();
+  // Ensure translations don't break at install time
+  $t = get_t();
+  module_load_include('inc', 'closure', 'includes/closure.detect');
+  $closure = closure_detect_verion();
+  if (!$closure[0]) {
+    $requirements['closure_library'] = array(
+      'title' => $t('Google Closure Library'),
+      'description' => $t('Please download Google Closure Library to %dir using
+      this command: %command', array(
+        '%dir' => $closure[1],
+        '%command' => 'svn export http://closure-library.googlecode.com/svn/trunk/ closure-library',
+      )),
+      'severity' => REQUIREMENT_ERROR,
+    );
+  }
+  else {
+    $requirements['closure_library'] = array(
+      'title' => $t('Google Closure Library'),
+      'value' => $closure[1],
+      'description' => $t('The Closure Library is a broad, well-tested, modular, and cross-browser JavaScript library. You can pull just what you need from a large set of reusable UI widgets and controls, and from lower-level utilities for DOM manipulation, server communication, animation, data structures, unit testing, rich-text editing, and more.'),
+      'severity' => REQUIREMENT_OK,
+    );
+  }
+  return $requirements;
+}
+
+// @TODO: Check and replace system library
+
